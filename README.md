@@ -63,13 +63,9 @@ what object is created. Valid `type` values are:
 
 Type Value   |   Interpretation
 -------------|------------------
-`:X`		 | Call the function `X` in the code. `X` can be any valid callable
-			  symbol which is defined in the code
+`:X`		 | Call the function `X` in the code. `X` can be any valid callable symbol which is defined in the code
 `generic`     Call any generic Julia code such as `x -> x + 1`
-`function`   | Call a function with no arguments. This is syntactic sugar for
-			  `generic`, but is useful to explicitly state that we are calling
-			  a function. This was introduced to make it expicit when
-			  a function is being called in a `Flux.Chain`, e.g. a `flatten`
+`function`   | Call a function with no arguments. This is syntactic sugar for `generic`, but is useful to explicitly state that we are calling a function. This was introduced to make it expicit when a function is being called in a `Flux.Chain`, e.g. a `flatten`
 `constant`   | Return a constant
 
 Custom `type`s can be registered using the `custom` function. More on that
