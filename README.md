@@ -107,4 +107,65 @@ them in the configuration file as a symbol. The exception to this is the
 
 ### `kwargs`
 
-# Custom `type`s
+## `type`s
+
+### `:X`
+
+The syntax `:X` allows us to create a struct or run a function with the symbol
+`X`. To this function, we can pass in any arguments using the `args` key, or we
+can create a subtree below this node, where each path in the subtree will
+denote a sequential argument. If the `:X` node is at position `1.x` in the
+tree, then the `yth` argument to `:X` will be at position `1.x.y`. Hence, we
+have an ordering of arguments. The benefit to this approach is that any
+argument to the function can be a subtree of many, many elements, and so it's
+easy to construct complex objects or call functions on complex objects.
+
+For example, if we want to create struct `A`, but struct `A` takes in struct
+`B`, which takes in struct `C` to their respective arguments, we can easily
+do the following:
+```TOML
+[1]
+type = ":A"
+
+[1.1]
+type = ":B"
+
+[1.1.1]
+type = ":C"
+
+[1.1.1.y]
+# Arguments to create C, where y = 1, 2, 3, ...
+
+[1.1.x]
+# Other arguments to create B, where x = 2, 3, 4, ...
+
+[1.z]
+# Other arguments to create A, where z = 2, 3, 4, ...
+```
+This effectively creates an object similarly to calling
+`A(B(C(...), ...), ...)` in the code.
+
+The drawback of using `:X` instead of `generic` is that all symbols in the code
+have to be referred to as symbols, otherwise it's impossible to tell when the
+configuration is specifying a `String` or some object referred to by a
+`Symbol`. The benefit that `:X` has over `generic` is that it's much more
+powerful and can create very complex hierarchies of objects.
+
+### `generic`
+
+With the `generic` type, we can call any arbitrary Julia code by passing the
+code as a single argument in `args`. The benefit of using `generic` is that we
+don't have to refer to anything by symbols.
+
+## Calling Function or Creating Objects Defined in the Code
+
+One awesome feature is that if a function or struct is defined in your Julia
+code, then that code can be called from the configuration file! Well, not
+exactly, but almost! For example, if you have a function `f` defined in your
+code with a variable `x` defined in your code, then you can easily refer to
+this in the configuration file. In a `generic` type, you would call `f(x)`, and
+in a `:X` type, you would call `:(f(x))` or `:f(x)` (the second form is a bit
+of an abuse of notation and its use is discouraged).
+
+## Custom `type`s
+

@@ -39,7 +39,7 @@ args=[":tanh"]
 # Example configuration of a Flux.Dense with set arguments
 [1.2]
 type=":Dense"
-args = [10, 3, ":tanh"]
+args = [10, ":(outputs(env_name))", ":tanh"]
 [1.2.kwargs]
 ":bias" = true
 ":init" = ":(Flux.glorot_uniform)"

@@ -20,6 +20,14 @@ function state_inputs(x)
 	end
 end
 
+function outputs(x)
+	if env_name == "MountainCar"
+		return 2
+	else
+		return 1
+	end
+end
+
 net = TOML.parsefile("net.toml")
 
 # display(net)
