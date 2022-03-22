@@ -1,23 +1,22 @@
-[layers]
-
-[layers.1]
+[1]
 type=":Chain"
-[layers.1.kwargs]
+[1.kwargs]
 
-[layers.1.1]
+[1.1]
 type=":Dense"
 args = [1, 10, ":relu"]
-[layers.1.1.kwargs]
+[1.1.kwargs]
 ":bias" = true
 ":init" = ":(Flux.glorot_uniform)"
 
-[layers.1.2]
+[1.2]
 type=":Dense"
 args = [10, 3, ":tanh"]
-[layers.1.2.kwargs]
+[1.2.kwargs]
 ":bias" = true
 ":init" = ":(Flux.glorot_uniform)"
 
-[layers.1.3]
+[1.3]
 type = "generic"
-expr = "x -> x .+ 1.0"
+args = ["x -> x .+ 1.0"]
+[1.3.kwargs]
