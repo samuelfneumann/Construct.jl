@@ -90,7 +90,7 @@ args = ["x -> x + 1"]
 ```
 will return the anonymous function `x -> x + 1`. As another example, the
 following will fail:
-```
+```TOML
 type = "generic"
 args = ["x -> x + 1", "x -> x - 1"]
 ```
