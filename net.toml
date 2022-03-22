@@ -1,14 +1,42 @@
+# This file is an example configuration of a Flux.Chain neural network using a
+# number of Fully connected Flux.Dense layers and a final anonymous function.
+# This file also demonstrates how functions in your code can be called and used
+# as configuration parameters.
+#
+# This is useful for example if a configuration
+# option is unknown until runtime. E.g. if you're running an RL experiment, you
+# can define a neural network in this file that takes number of inputs ==
+# number of state observations, but defer the definition of the number
+# of state observations until runtime. In this case this neural network can
+# work on any environment with any number of state observations, since the
+# network inputs won't be initialized until the number of inputs are known!
 [1]
 type=":Chain"
 [1.kwargs]
 
 [1.1]
+# Example configuration of a Flux.Dense with arguments generated at runtime
+# from the code.
 type=":Dense"
-args = [1, 10, ":relu"]
+[1.1.1]
+# You can even call functions defined in your code on variables defined in
+# your code! For example, the function `state_inputs`
+# is defined in module `Create` and so is the string `env_name`!
+# Neither of these exist in the configuration file, but as long as they
+# are symbols defined in the code, we can access them!
+type="generic"
+args = ["state_inputs(env_name)"]
+[1.1.2]
+type="constant"
+args=[10]
+[1.1.3]
+type="constant"
+args=[":tanh"]
 [1.1.kwargs]
 ":bias" = true
 ":init" = ":(Flux.glorot_uniform)"
 
+# Example configuration of a Flux.Dense with set arguments
 [1.2]
 type=":Dense"
 args = [10, 3, ":tanh"]
@@ -16,7 +44,21 @@ args = [10, 3, ":tanh"]
 ":bias" = true
 ":init" = ":(Flux.glorot_uniform)"
 
+# Example configuration of generic Julia code
 [1.3]
 type = "generic"
-args = ["x -> x .+ 1.0"]
+args = ["x -> x .+ 0.0001"]
 [1.3.kwargs]
+
+[1.4]
+# The `function` type lets us refer a function. This part of the configuration
+# will place a Flux.flatten function at the end of the chain. Really,
+# `function` is just an alias for `generic`
+type = "function"
+args = ["flatten"]
+
+[1.5]
+# If you need to vectorize a function, you must to specify an anonymous
+# function to do so.
+type = "generic"
+args = ["x -> logsigmoid.(x)"]

@@ -32,7 +32,13 @@ function _op(dict)
 	end
 	type = dict["type"]
 
-	return _custom._op[type](dict["args"]...; dict["kwargs"]...)
+	if "kwargs" in keys(dict)
+		kwargs = dict["kwargs"]
+	else
+		kwargs = Dict()
+	end
+
+	return _custom._op[type](dict["args"]...; kwargs...)
 end
 
 """
@@ -66,8 +72,21 @@ julia> custom("constant", x -> x)
 """
 custom(type, op::Function) = _custom._op[type] = op
 
-custom("generic", x -> eval(Meta.parse(x)))
-custom("constant", x -> x)
+"""
+	constant(x)
 
-# # JuliaRL input shape e.g.
-# custom("env_input", eval(Meta.parse("shape(lower(observation_space(env)))")
+Return x
+"""
+constant(x) = return x
+
+"""
+	generic(x::String)
+
+Parse and evaluate generic Julia code
+"""
+generic(x::String) = return eval(Meta.parse(x))
+
+# Register some extra functionality
+custom("generic", generic)
+custom("constant", constant)
+custom("function", generic)

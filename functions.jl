@@ -10,7 +10,7 @@ function parse(config::Dict{String, Any})
 
 		return nothing
 	end
-	out = _parse_symbol(net, Dict())
+	out = _parse_symbol(net)
 
 	return _parse(out)
 end
@@ -81,6 +81,16 @@ function _parse(config::Dict{Any, Any})
 	return constructor(args...; kwargs...)
 end
 
+"""
+	_parse_key(key)
+
+Parse and return an appropriate representation for `key`.
+
+Parses `key` and returns an appropriate representation for it. Valid keys are `String`s,
+`Symbol`s, and `Integer`s. Since everything exists as `String`s in the configuration file,
+this function parses these `String`s, changing them to `Symbol`s (defined as a string
+starting with a `:`) and `Integer`s as appropriate.
+"""
 function _parse_key(key)
 	# Check if the key is a symbol
 	new_key = _parse_symbol(key; value=false)
@@ -96,13 +106,30 @@ function _parse_key(key)
 	return new_key
 end
 
-function _parse_symbol(config::Dict{String, Any}, out::Dict{Any, Any})::Dict{Any, Any}
+"""
+	_parse_symbol(config::Dict{String, Any}, out::Dict{Any, Any})::Dict{Any, Any}
+	_parse_symbol(elem; value=false)
+
+Parse a value, converting it to an appropriate representation for object construction.
+
+This function parses `String`s into `Symbol`s or the evaluation of `Symbol`s (i.e.,
+`eval(s::Symbol)`. `String`s that start with `:` are considered `Symbol`s.
+Dictionary keys are left as `Symbol`s, but the values are set to
+`eval(s::Symbol)`.
+
+If `value` is `true`, then parsing `elem` treats `elem` as a value of a `Dict`. That is, we
+evaluate the parsed expression and return the evaluated expression. If `value` is `false`,
+then we treat `elem` as a key of a `Dict`, and so we return the `Symbol`/`Expr` and leave it
+un-evaluated.
+"""
+function _parse_symbol(config::Dict{String, Any})::Dict{Any, Any}
+	out = Dict()
 	for key in keys(config)
 
 		new_key = _parse_key(key)
 
 		if config[key] isa Dict
-			out[new_key] = _parse_symbol(config[key], Dict())
+			out[new_key] = _parse_symbol(config[key])
 		elseif config[key] isa String && config[key][1] == ':'
 			out[new_key] = eval(Meta.parse(config[key][2:end]))
 		elseif lowercase(key) == "args"
@@ -126,7 +153,12 @@ function _parse_symbol(elem; value=false)
 	return elem
 end
 
-function _to_int(elem)
+"""
+	_to_int(elem)::Union{Int,Nothing}
+
+Convert elem to an `Int` if possible, otherwise return `nothing`.
+"""
+function _to_int(elem)::Union{Int,Nothing}
 	if elem isa String
 		elem = lowercase(elem)
 		if elem == "args" || elem == "kwargs" || elem == "type"
