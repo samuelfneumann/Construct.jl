@@ -98,7 +98,7 @@ since the `generic` type takes only a single argument. To create an object, we
 actually need to refer to it by its symbol. To create a `Flux.Dense`:
 ```TOML
 type = ":Dense"
-args = [10, 3, :relu]
+args = [10, 3, ":relu"]
 ```
 As you can see, we also referred to the activation function by its symbol
 `:relu`. In general, whenever we access symbols in the code, we must specify
