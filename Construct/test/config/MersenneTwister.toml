@@ -1,0 +1,4 @@
+[1]
+type=":MersenneTwister"
+args=[1]
+[1.kwargs]

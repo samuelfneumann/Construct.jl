@@ -10,7 +10,7 @@ function parse(config::Dict{String, Any})
 
 		return nothing
 	end
-	out = _parse_symbol(net)
+	out = _parse_symbol(config)
 
 	return _parse(out)
 end

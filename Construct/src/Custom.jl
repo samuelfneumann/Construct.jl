@@ -70,7 +70,7 @@ julia> custom("generic", x -> eval(Meta.parse(x)))
 julia> custom("constant", x -> x)
 ```
 """
-custom(type, op::Function) = _custom._op[type] = op
+custom(type::String, op::Function) = _custom._op[type] = op
 
 """
 	constant(x)
@@ -86,7 +86,3 @@ Parse and evaluate generic Julia code
 """
 generic(x::String) = return eval(Meta.parse(x))
 
-# Register some extra functionality
-custom("generic", generic)
-custom("constant", constant)
-custom("function", generic)
