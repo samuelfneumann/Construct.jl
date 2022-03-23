@@ -186,13 +186,13 @@ For example, if we want to create struct `A`, but struct `A` takes in struct
 do the following:
 ```TOML
 [1]
-type = ":A"
+type = ":(Main.Example.A)"
 
 [1.1]
-type = ":B"
+type = ":(Main.Example.B)"
 
 [1.1.1]
-type = ":C"
+type = ":(Main.Example.C)"
 
 [1.1.1.y]
 # Arguments to create C, where y = 1, 2, 3, ...
@@ -204,7 +204,17 @@ type = ":C"
 # Other arguments to create A, where z = 2, 3, 4, ...
 ```
 This effectively creates an object similarly to calling
-`A(B(C(...), ...), ...)` in the code.
+`A(B(C(...), ...), ...)` in the `Example` module.
+
+One caveat to using `:X` is that names must be **fully qualified** unless the
+name is accessible from the Julia REPL **without** importing any other modules.
+That is, any Julia symbol in `Base` can be used without being fully qualified.
+Other than that, you any symbol must be fully qualified, where the
+qualification refers to the symbol as imported in the current module. For
+example, if Flux.jl is imported, then we refer to the `Flux.Dense` as
+`Main.Example.Dense` or `Main.Example.Flux.Dense`, not `Flux.Dense`. So, this
+`type` is better named `:(X)` instead of `:X`, but `:X` seems like a nicer
+name.
 
 The drawback of using `:X` instead of `generic` is that all symbols in the code
 have to be referred to as symbols, otherwise it's impossible to tell when the
