@@ -79,8 +79,8 @@ must be a `Vector{Any}` and has the following interpretations:
 
 Type Value   |   Interpretation of `args`
 -------------|----------------------------
-`:X`		 | Call `X(args...)`. All symbols must be **fully qualified**
-`generic`    | The generic Julia code to call. Must be a `Vector` of length 1.  Names need not be fully qualified.
+`:X`		 | Call `X(args...)`
+`generic`    | The generic Julia code to call. Must be a `Vector` of length 1
 `function`   | The function to call (same as `generic`)
 `constant`   | The constant value to return
 
