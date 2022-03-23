@@ -75,15 +75,13 @@ Each successive configuration layer has the following form:
 
 ```TOML
 [x]
-type = t
-args = [y]
+type = # some type description
+args = # a sequence of values
 [x.kwargs]
 # key = value pairs
 ```
 
-where `x` can be any sequence of numbers separated by a `.`, `t` is some
-`type` (described below), and `y` is any sequence of arguments. The
-`kwargs` are usually optional.
+where `x` can be any sequence of numbers separated by a `.`.
 
 ### `type`
 
