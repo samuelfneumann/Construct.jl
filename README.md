@@ -4,8 +4,21 @@ Create any Julia object from a configuration file.
 
 This package allows the creation of any Julia object from some configuration
 file (such as TOML) which can be parsed into a `Dict`. For example, consider
-the following TOML file which outlines a neural network using Flux.jl (assume
-that we are running code from module `Main.Example`):
+the following Julia code:
+```julia
+module Example
+
+using Construct
+using Flux
+using TOML
+
+file = ...  # Some TOML configuration file, contents of which defined below
+config = TOML.parsefile(file)
+net = Construct.parse(config)
+end
+```
+with the following TOML configuration file, outlining a neural network using
+Flux.jl:
 
 ```TOML
 [1]
@@ -31,7 +44,8 @@ type="generic"
 args = ["x -> :(Main.Example.Flux.softmax)(x)"]
 ```
 
-This configuration file, when parsed by	the `parse` function will result in a
+This configuration file, when parsed by	the `Construct.parse`
+function will result in a
 `Flux.Chain` of `Flux.Dense(10, 21, tanh)`, followed by a `Flux.Dense(21, 3,
 tanh)` and finally by a `Flux.softmax` function, outputting a softmax
 distribution over 3 values.
@@ -89,18 +103,25 @@ For example:
 type = "generic"
 args = ["x -> x + 1"]
 ```
+
 will return the anonymous function `x -> x + 1`. As another example, the
 following will fail:
+
 ```TOML
 type = "generic"
 args = ["x -> x + 1", "x -> x - 1"]
 ```
-since the `generic` type takes only a single argument. To create an object, we
+
+Since the `generic` type takes only a single argument.
+
+To create an object/struct, we
 actually need to refer to it by its symbol. To create a `Flux.Dense`:
+
 ```TOML
 type = ":(Main.Example.Dense)"
 args = [10, 3, ":(Main.Example.relu)"]
 ```
+
 As you can see, we also referred to the activation function by its symbol
 `:relu`. In general, whenever we access symbols in the code, we must specify
 them in the configuration file as a symbol, and this symbol must be **fully
@@ -113,6 +134,19 @@ but names must be fully qualified still. For example, we would refer to name
 `x` in package `X` as `Main.X.x` in a `generic` type.
 
 ### `kwargs`
+
+Keyword arguments for layer `[1...x]` are placed in a dictionary at
+`[1...x.kwargs]` where the `...` refers to any number of nested
+sub-configurations. For example, the keyword arguments for layer `[1.x.y]` are
+placed at `[1.x.y.kwargs]`. Each keyword argument is simply listed as a
+key-value pair:
+
+```TOML
+[1.x.y.kwargs]
+key1 = value1
+key2 = value2
+...
+```
 
 ## `type`s
 
@@ -177,7 +211,8 @@ code with a variable `x` defined in your code, then you can easily refer to
 this in the configuration file. In a `generic` type, you would call
 `Main.Example.f(x)`, and
 in a `:X` type, you would call `:(Main.Example.f(x))`. Remember though that the
-names must be **fully qualified**.
+names must be **fully qualified** so that Construct.jl knows what you are
+talking about.
 
 ## Custom `type`s
 
