@@ -71,6 +71,20 @@ example, `[1.x.y.z]` is the `zth` argument to the `yth` function call, which
 itself is the `xth` argument to the final constructed object, defined in layer
 `[1]`.
 
+Each successive configuration layer has the following form:
+
+```TOML
+[x]
+type = t
+args = [y]
+[x.kwargs]
+# key = value pairs
+```
+
+where `x` can be any sequence of numbers separated by a `.`, `t` is some
+`type` (described below), and `y` is any sequence of arguments. The
+`kwargs` are usually optional.
+
 ### `type`
 
 Each successive layer has a `type`, which defines which function is called or
