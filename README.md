@@ -198,6 +198,11 @@ With the `generic` type, we can call any arbitrary Julia code by passing the
 code as a single argument in `args`. The benefit of using `generic` is that we
 don't have to refer to anything by symbols.
 
+### `constant`
+
+With the `constant` type, we can return any constant value, defined by the
+single value in the `args` array. If `length(args) != 0`, we'll get an error.
+
 ## Calling Functions or Creating Objects Defined in the Code
 
 One awesome feature is that if a function or struct is defined in your Julia
