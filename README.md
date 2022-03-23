@@ -143,10 +143,17 @@ key-value pair:
 
 ```TOML
 [1.x.y.kwargs]
-key1 = value1
-key2 = value2
+:"key1" = value1
+:"key2" = value2
 ...
 ```
+
+Note that the keys are represented as Julia symbols (start with a `:`) and must
+be wrapped in `"`.
+
+Only the `:X` builtin `type` takes keyword arguments. If keyword arguments
+are specified for any other builtin `type`, then an error will be
+raised. Custom `type`s can be implemented to take keyword arguments.
 
 ## `type`s
 
