@@ -61,4 +61,4 @@ args = ["Main.Run.Flux.flatten"]
 # If you need to vectorize a function, you must to specify an anonymous
 # function to do so.
 type = "function"
-args = ["x -> :(Main.Run.logsigmoid).(x)"]
+args = ["x -> Main.Run.logsigmoid.(x)"]

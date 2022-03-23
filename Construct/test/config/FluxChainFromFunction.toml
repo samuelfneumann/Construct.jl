@@ -5,8 +5,8 @@ type=":(Main.Chain)"
 [1.1]
 type=":(Main.Dense)"
 [1.1.1]
-type="constant"
-args = [2]
+type="generic"
+args = ["Main.state_inputs(Main.env_name)"]
 [1.1.2]
 type="constant"
 args=[10]
@@ -19,7 +19,7 @@ args=[":(Main.tanh)"]
 
 [1.2]
 type=":(Main.Dense)"
-args = [10, 3, ":(Main.tanh)"]
+args = [10, ":(Main.outputs(Main.env_name))", ":(Main.tanh)"]
 [1.2.kwargs]
 ":bias" = true
 ":init" = ":(Main.Flux.glorot_uniform)"
