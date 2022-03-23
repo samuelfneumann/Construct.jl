@@ -143,8 +143,8 @@ key-value pair:
 
 ```TOML
 [1.x.y.kwargs]
-:"key1" = value1
-:"key2" = value2
+":key1" = value1
+":key2" = value2
 ...
 ```
 
