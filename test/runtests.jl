@@ -30,7 +30,7 @@ end
 
 # Construct a MersenneTwister
 @testset "MersenneTwister" begin
-	twister = TOML.parsefile("./test/config/MersenneTwister.toml")
+	twister = TOML.parsefile("./config/MersenneTwister.toml")
 	twister = Construct.parse(twister)
 
 	@test twister isa Random.MersenneTwister
@@ -38,7 +38,7 @@ end
 
 # Construct a Flux Chain given constant arguments to Dense
 @testset "FluxChain" begin
-	net = TOML.parsefile("./test/config/FluxChain.toml")
+	net = TOML.parsefile("./config/FluxChain.toml")
 	net = Construct.parse(net)
 
 	@test net isa Chain
@@ -49,7 +49,7 @@ end
 
 # Construct a Flux Chain using defined functions to generate arguments for Dense
 @testset "FluxChainFromFunction" begin
-	net = TOML.parsefile("./test/config/FluxChainFromFunction.toml")
+	net = TOML.parsefile("./config/FluxChainFromFunction.toml")
 	net = Construct.parse(net)
 
 	@test net isa Chain
@@ -60,7 +60,7 @@ end
 
 # Test construction of a parameterized type
 @testset "ParameterizedType" begin
-	config = TOML.parsefile("./test/config/Point.toml")
+	config = TOML.parsefile("./config/Point.toml")
 	point = Construct.parse(config)
 
 	@test point isa Point{Int}
@@ -70,7 +70,7 @@ end
 
 # Test construction of a parameterized type with type parameter specified
 @testset "ParameterizedTypeWithTypeSpecified" begin
-	config = TOML.parsefile("./test/config/PointSpecified.toml")
+	config = TOML.parsefile("./config/PointSpecified.toml")
 	point = Construct.parse(config)
 
 	@test point isa Point{Int}
