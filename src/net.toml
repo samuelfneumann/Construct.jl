@@ -34,7 +34,10 @@ type="constant"
 args=[":(Main.Run.tanh)"]
 [1.1.kwargs]
 ":bias" = true
-":init" = ":(Main.Run.Flux.glorot_uniform)"  # Qualify package for non-exported name
+# ":init" = ":(Main.Run.Flux.glorot_uniform)"  # Qualify package for non-exported name
+[1.1.":init"]
+type = "generic"
+args = ["Main.Run.Flux.orthogonal"]
 
 # Example configuration of a Flux.Dense with set arguments
 [1.2]

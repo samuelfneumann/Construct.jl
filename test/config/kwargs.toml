@@ -1,0 +1,6 @@
+[1]
+type = ":(Main.a)"
+args = [3]
+[1.":b"]
+type = "constant"
+args = [1]

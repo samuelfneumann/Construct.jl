@@ -1,5 +1,5 @@
 """
-	parse(config::Dict{String, Any}
+	parse(config::Dict{String, Any})
 
 Parse and return the object defined by `config`
 """
@@ -10,7 +10,10 @@ function parse(config::Dict{String, Any})
 
 		return nothing
 	end
+
+	# Change all appropriate strings to Symbols
 	out = _parse_symbol(config)
+	display(out)
 
 	return _parse(out)
 end
@@ -41,7 +44,7 @@ function _parse(config::Dict{Any, Any})
 		deleteat!(dict_keys, findall(x -> x == "kwargs", dict_keys))
 	end
 
-	if length(dict_keys) == 1
+	if length(dict_keys) == 1 && dict_keys[1] == 1
 		key = collect(keys(config))[1]
 		if !(config[key] isa Dict)
 			return error("expected a Dict but got $(typeof(config[key]))")
@@ -49,35 +52,45 @@ function _parse(config::Dict{Any, Any})
 		return _parse(config[key])
 	end
 
+	# Construct all positional arguments
 	args = []
-
-	# Ensure all keys are numeric
-	int_dict_keys = _to_int.(dict_keys)
-	if nothing in int_dict_keys
-		i = findall(x -> x === nothing, int_dict_keys)[1]
+	filtered_dict_keys = _to_int_symbol.(dict_keys)
+	if nothing in dict_keys
+		i = findall(x -> x === nothing, filtered_dict_keys)[1]
 		arg = dict_keys[i]
 		error("config keys should be all numeric but got $arg")
 	end
-	dict_keys = int_dict_keys
+	int_dict_keys = filter(x -> x isa Int, filtered_dict_keys)
 
-	dict_keys = sort(dict_keys)
-	for k in dict_keys
+	int_dict_keys = sort(int_dict_keys)
+	for k in int_dict_keys
 		push!(args, _parse(config[k]))
 	end
 
-	# Construct the object
-	constructor = config["type"]
-	if "kwargs" in keys(config)
-		kwargs = config["kwargs"]
-	else
-		kwargs = Dict()
-	end
+	# Ensure only one form of positional arguments was given
 	if "args" in  keys(config) && length(args) != 0
 		error("args specified twice")
 	elseif length(args) == 0 && "args" in keys(config)
 		args = config["args"]
 	end
 
+	# Construct all kwargs
+	kwargs = Dict{Symbol, Any}()
+	sym_dict_keys = filter(x -> x isa Symbol, filtered_dict_keys)
+	for k in sym_dict_keys
+		kwargs[k] = _parse(config[k])
+	end
+	if "kwargs" in keys(config)
+		for k in keys(config["kwargs"])
+			if k in keys(kwargs)
+				error("kwarg $k specified twice")
+			end
+			kwargs[k] = config["kwargs"][k]
+		end
+	end
+
+	# Construct object
+	constructor = config["type"]
 	return constructor(args...; kwargs...)
 end
 
@@ -154,21 +167,25 @@ function _parse_symbol(elem; value=false)
 end
 
 """
-	_to_int(elem)::Union{Int,Nothing}
+	_to_int_symbol(elem)::Union{Int,Symbol,Nothing}
 
-Convert elem to an `Int` if possible, otherwise return `nothing`.
+Convert elem to an `Int` if possible, otherwise if it is a `Symbol`, then leave it,
+otherwise return `nothing`.
 """
-function _to_int(elem)::Union{Int,Nothing}
+function _to_int_symbol(elem)::Union{Int,Symbol,Nothing}
 	if elem isa String
-		elem = lowercase(elem)
-		if elem == "args" || elem == "kwargs" || elem == "type"
-			return elem
-		end
+		# elem = lowercase(elem)
+		# if elem == "args" || elem == "kwargs" || elem == "type"
+		#     return elem
+		# end
 
 		return tryparse(Int, elem)
 
 	elseif elem isa Integer
 		return Int(elem)
+
+	elseif elem isa Symbol
+		return elem
 
 	end
 

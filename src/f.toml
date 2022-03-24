@@ -1,0 +1,8 @@
+[1]
+type = ":(Main.Run.f)"
+args = [1]
+[1.kwargs]
+":a" = 1
+[1.":m"]
+type = "constant"
+args = [2]

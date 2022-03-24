@@ -56,7 +56,7 @@ object from a configuration file.
 
 ## Layout of (TOML) Configuration Files
 
-Each configuration file is treats as a *Call Tree*, which denotes function
+Each configuration file is treated as a *Call Tree*, which denotes function
 calls with their arguments. The tree should have a single root node, which
 determines which object is created. This is the first layer `[1]` in the
 configuration file above, and results in the creation of a `Flux.Chain`. In
@@ -269,3 +269,7 @@ args = [...]
 
 then `start_agent(args...; kwargs...)` will be called when parsing the
 configuration file.
+
+## To Do
+- [ ] For `kwargs`, don't require ":" to precede the name as it's clear that
+  for any `kwarg` we must change it to a symbol anyway.
