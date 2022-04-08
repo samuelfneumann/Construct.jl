@@ -33,7 +33,7 @@ args = [10, 21, ":(Main.Example.tanh)"]
 ":init" = ":(Main.Example.Flux.glorot_uniform)"
 
 [1.2]
-type=":Dense"
+type=":(Main.Example.Dense)"
 args = [21, 3, ":(Main.Example.tanh)"]
 [1.2.kwargs]
 ":bias" = true
