@@ -63,12 +63,15 @@ object from a configuration file.
 
 ## Functions
 
-Construct.jl exports a single function, which is the workhorse of object
-construction. Configuration file structure is described in
-[General Structure](@ref)
+Construct.jl exports two functions. `parse` is the workhorse of object
+construction. `custom` allows you to add custom functionality to your
+configuration files as outlined in [Custom Types](@ref).
+Configuration file structure is described in [General Structure](@ref).
 
 ```@docs
 Construct.parse(config::Dict{String, Any})
+Construct.custom(type::String, op::Function)
+
 ```
 
 ## Index

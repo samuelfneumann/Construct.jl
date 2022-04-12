@@ -17,9 +17,41 @@ struct _Custom
 end
 
 """
+	custom(type::String, op::Function)
+
+Register a custom function to be called for `type`.
+
+Whenever a type of `type` is encountered in a configuration dictionary `dict`,
+call `op(dict["args"]...; dict["kwargs"]...)`.
+
+# Example
+```juliaREPL
+julia> custom("generic", x -> eval(Meta.parse(x)))
+julia> custom("constant", x -> x)
+```
+"""
+custom(type::String, op::Function) = _custom._op[type] = op
+
+"""
+	constant(x)
+
+Return x
+"""
+constant(x) = return x
+
+"""
+	generic(x::String)
+
+Parse and evaluate generic Julia code
+"""
+generic(x::String) = return eval(Meta.parse(x))
+
+"""
 Singleton instance of _Custom
 """
 const _custom = _Custom()
+
+
 
 """
 	_op
@@ -54,35 +86,3 @@ function _is_custom(dict)::Bool
 
 	return type in keys(_custom._op)
 end
-
-"""
-	custom(type, op::Function)
-
-Register a custom function to be called for `type`.
-
-Whenever a type of `type` is encountered in a configuration dictionary `dict`, call
-`op` with `dict["args"]` and `dict["kwargs"]`. That is, call `op(dict["args"]...;
-dict["kwargs"]...)`.
-
-# Example
-```juliaREPL
-julia> custom("generic", x -> eval(Meta.parse(x)))
-julia> custom("constant", x -> x)
-```
-"""
-custom(type::String, op::Function) = _custom._op[type] = op
-
-"""
-	constant(x)
-
-Return x
-"""
-constant(x) = return x
-
-"""
-	generic(x::String)
-
-Parse and evaluate generic Julia code
-"""
-generic(x::String) = return eval(Meta.parse(x))
-

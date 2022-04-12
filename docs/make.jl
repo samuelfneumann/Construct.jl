@@ -9,7 +9,7 @@ makedocs(
 			"configuration_files.md",
 			"toml.md",
 			"json.md",
-			"custom_types.md",
-		]
+		],
+		"custom_types.md",
 	],
 	)
