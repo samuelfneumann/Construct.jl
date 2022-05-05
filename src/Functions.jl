@@ -13,9 +13,8 @@ function parse(config::Dict{String, Any})
 
 	# Change all appropriate strings to Symbols
 	out = _parse_symbol(config)
-	display(out)
 
-	return _parse(out)
+	return _parse(out, true)
 end
 
 """
@@ -26,7 +25,7 @@ configuration dictionary should be such that all symbols are defined, that is, a
 referring to a function call or constructor call should not be a string representation, but
 rather should be a reference to the function.
 """
-function _parse(config::Dict{Any, Any})
+function _parse(config::Dict{Any, Any}, top_level::Bool)
 	# If the type is a custom type, perform the custom type functionality and return
 	if _is_custom(config)
 		return _op(config)
@@ -44,12 +43,12 @@ function _parse(config::Dict{Any, Any})
 		deleteat!(dict_keys, findall(x -> x == "kwargs", dict_keys))
 	end
 
-	if length(dict_keys) == 1 && dict_keys[1] == 1
+	if length(dict_keys) == 1 && dict_keys[1] == 1 and top_level
 		key = collect(keys(config))[1]
 		if !(config[key] isa Dict)
 			return error("expected a Dict but got $(typeof(config[key]))")
 		end
-		return _parse(config[key])
+		return _parse(config[key], false)
 	end
 
 	# Construct all positional arguments
@@ -64,7 +63,7 @@ function _parse(config::Dict{Any, Any})
 
 	int_dict_keys = sort(int_dict_keys)
 	for k in int_dict_keys
-		push!(args, _parse(config[k]))
+		push!(args, _parse(config[k], false))
 	end
 
 	# Ensure only one form of positional arguments was given
@@ -78,7 +77,7 @@ function _parse(config::Dict{Any, Any})
 	kwargs = Dict{Symbol, Any}()
 	sym_dict_keys = filter(x -> x isa Symbol, filtered_dict_keys)
 	for k in sym_dict_keys
-		kwargs[k] = _parse(config[k])
+		kwargs[k] = _parse(config[k], false)
 	end
 	if "kwargs" in keys(config)
 		for k in keys(config["kwargs"])

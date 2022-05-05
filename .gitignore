@@ -1,4 +1,6 @@
 # Vim files
+.tags
+.tags.lock
 *.un~
 *.swp
 
