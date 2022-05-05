@@ -2,7 +2,7 @@
 
 Create any Julia object from a configuration file.
 
-This file is a re-write of my [Construct.py](https://github.com/samuelfneumann/Construct-Py/blob/master/construct_py/construct_py.py)
+This file is a re-write of my [Construct.py](https://github.com/samuelfneumann/Construct-Py/blob/master/construct_py)
 module in Julia. This package is still under development, but should mostly
 work. Expect some adventures!
 
@@ -277,3 +277,7 @@ configuration file.
 ## To Do
 - [ ] For `kwargs`, don't require ":" to precede the name as it's clear that
   for any `kwarg` we must change it to a symbol anyway.
+- [ ] Document usage of `Main`
+- [ ] Fix the descriptions of `type`s, `args` and `kwargs`. It is very unclear
+  in this readme. The Construct.py readme is much more clear. Use that
+  description.
