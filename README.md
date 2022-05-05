@@ -2,6 +2,10 @@
 
 Create any Julia object from a configuration file.
 
+This file is a re-write of my [Construct.py](https://github.com/samuelfneumann/Construct-Py/blob/master/construct_py/construct_py.py)
+module in Julia. This package is still under development, but should mostly
+work. Expect some adventures!
+
 This package allows the creation of any Julia object from some configuration
 file (such as TOML) which can be parsed into a `Dict`. For example, consider
 the following Julia code:
